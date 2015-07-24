@@ -1,0 +1,44 @@
+[
+   
+	{
+        name: 'National Road',
+        thumb: 'natnl.png',
+        url: 'national',
+		tooltip:'National Road'	
+    },	
+	{
+        name: 'Provincial',
+        thumb: 'provincial.png',
+        url: 'provincial',
+		tooltip:'Provincial Road'	
+    },	
+	{
+        name: 'City',
+        thumb: 'city.png',
+        url: 'city',
+		tooltip:'City Road'	
+    },	
+	{
+        name: 'Municipal',
+        thumb: 'municipal.png',
+        url: 'municipal',
+		tooltip:'Municipal Road'	
+    },	
+	{
+        name: 'Barangay',
+        thumb: 'brgy.png',
+        url: 'brgy',
+		tooltip:'Barangay Road'	
+    },	
+	{
+        name: 'Private',
+        thumb: 'private.png',
+        url: 'private',
+		tooltip:'Private Road'	
+    },	
+	
+]
+
+
+
+
