@@ -108,7 +108,7 @@ Ext.define('Chooser.Window', {
 		//agusan_del_sur_road_brgy
 		//Layer select based on province
 		//format layername						
-		layername=capitalizeFirstLetter(layer) + ' Road(LGU-' + Province + ')'
+		layername=capitalizeFirstLetter(layer) + ' Road (LGU-' + Province + ')'
 		
 		
 		
@@ -169,7 +169,17 @@ Ext.define('Chooser.Window', {
 							var bounds  = new OpenLayers.Bounds(layerObj.llbbox).transform('EPSG:4326', 'EPSG:900913')
 							map.zoomToExtent(bounds); 
 							break; 
-						} 	
+						} 
+						
+						if (i==(len-1)){
+							Ext.MessageBox.show({
+								msg: 'No data yet for layer:' + layername + ', please choose another layer',
+								buttons: Ext.MessageBox.OK,
+								icon: Ext.MessageBox.INFO
+							});
+							map.getLayersByName(layername)[0].destroy();
+						}
+						console.log(len, i);
 					}
 				}
 			});

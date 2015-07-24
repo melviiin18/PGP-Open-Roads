@@ -47,7 +47,7 @@ Ext.define('Chooser.IconBrowser', {
     initComponent: function() {
         this.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
-            fields: ['name', 'thumb', 'url', 'tooltip'],
+            fields: ['name', 'thumb', 'url', 'tooltip', 'province'],
             proxy: {
                 type: 'ajax',
                 url : './chooser/Data.json',

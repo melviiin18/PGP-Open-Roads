@@ -177,7 +177,37 @@ Ext.define('mappanel',{
 				   value:'Surigao del Sur',
 				   editable: false,
 				   autoSelect:true,
-				   forceSelection:true
+				   forceSelection:true,
+				   listConfig: {
+						listeners: {
+							itemclick: function(list, record) {
+								console.log(record.raw[0]);
+								viewport = Ext.ComponentQuery.query('viewport')[0];
+								
+								var chooserWindow = viewport.down('[region=west]');
+								iconStore = chooserWindow.down('#img-chooser-view').store;
+								//return
+								//load custom store
+									
+									var value = record.raw[0]; //get province
+									
+									/*
+									if (!value || value == '') {
+										return;
+									}*/
+									iconStore.clearFilter(true);
+									iconStore.filterBy(function(record,id){
+										var stringToMatch = (
+											record.get('province'))
+										var match = (stringToMatch.indexOf(value) >= 0 );
+										return match;
+									});
+									
+									console.log(iconStore);
+								//
+							}
+						}
+					}
 			},
 			{
 				xtype:'button',
@@ -402,7 +432,8 @@ Ext.define('mappanel',{
 				
 				var topLayer = map.layers[mapIndex].params
 				console.log(map.layers[mapIndex].params)	
-				var url = "http://geoserver.namria.gov.ph/geoserver/geoportal/wms?" +
+				//var url = "http://geoserver.namria.gov.ph/geoserver/geoportal/wms?" +
+				var url = "http://192.168.8.20:8080/geoserver/geoportal/wms?" +
 						    "request=GetFeatureInfo" + 
 							"&service=WMS" + 
 							"&version=1.1.1" + 
@@ -420,23 +451,34 @@ Ext.define('mappanel',{
 							"&y=" + Math.round(e.xy.y) + 
 							"&exceptions=application/json";
 							
-				url = "/webapi/get.ashx?url=" + escape(url);				
+						url = "/webapi/get.ashx?url=" + escape(url);	
+					
+						console.log(url);
 						me.execUrl(url, function(callback){		
 								console.log(callback);	
 								if (callback.features.length > 0){							
-									var pos =  e.xy									
+									var pos =  e.xy		
+									
+									var layer_config = Utilities.getLayerConfig(topLayer.LAYERS, topLayer.STYLES );	
+									console.log(layer_config);
+									var data = {};
+									
+									Ext.each(layer_config.config, function(item, index){
+										data[item.alias] = feature.properties[item.attribute];
+									});		
 									if (popup) {
 										popup.close();
 									}
 									popup = Ext.create('GeoExt.window.Popup', {
-										title: "Feature Information",
+										title:layer_config.title,
+										maximizable: false,	
 										location: pos,
 										map:map,	
 										width: 300,	
-										height:150,							
+										MaxHeight:150,							
 										items: {
 											xtype:'propertygrid',
-											source:callback.features[0].properties,
+											source:data,//callback.features[0].properties,
 											hideHeaders: false,
 											sortableColumns: false
 										},
@@ -461,7 +503,9 @@ Ext.define('mappanel',{
 				}
 			]			
 		});		
+
 		this.callParent();   
+		
     }	
 	
 	

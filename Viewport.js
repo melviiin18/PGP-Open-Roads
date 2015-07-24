@@ -222,6 +222,7 @@ Ext.application({
 		//
 		
         Ext.create('Ext.container.Viewport', {	
+			itemId:'viewport',
             layout: 'border',						
             items:[			
 				MapPanel,
