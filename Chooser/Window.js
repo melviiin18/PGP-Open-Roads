@@ -81,6 +81,10 @@ Ext.define('Chooser.Window', {
 			
         ];      
         
+		
+		
+		
+		
         //this.callParent(arguments);
 		this.callParent();        
        

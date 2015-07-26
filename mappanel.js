@@ -1,5 +1,3 @@
-//var pgp_basemap_cache, google_satellite, osm, arcgis_world_imagery, bing_aerial, pgp_ortho_mm_cache	
-
 Ext.define('mappanel',{
 	extend:'GeoExt.panel.Map',
 	alias:'Widget.mappanel',	
@@ -143,11 +141,7 @@ Ext.define('mappanel',{
 						map.zoomToExtent(OthoExtent);
 					else
 						map.zoomTo(1);
-						
 				}
-					//
-					
-					
 					
 			},{
 				xtype:'button',
@@ -175,6 +169,9 @@ Ext.define('mappanel',{
 				   store:['Surigao del Sur','Agusan del Sur','Siquijor'],
 				   displayField:'Province',
 				   value:'Surigao del Sur',
+				   labelPad:-40,
+				   padding:'0, 20, 0, 0',
+				   
 				   editable: false,
 				   autoSelect:true,
 				   forceSelection:true,
@@ -183,28 +180,20 @@ Ext.define('mappanel',{
 							itemclick: function(list, record) {
 								console.log(record.raw[0]);
 								viewport = Ext.ComponentQuery.query('viewport')[0];
-								
 								var chooserWindow = viewport.down('[region=west]');
 								iconStore = chooserWindow.down('#img-chooser-view').store;
-								//return
-								//load custom store
-									
 									var value = record.raw[0]; //get province
-									
-									/*
-									if (!value || value == '') {
-										return;
-									}*/
+									console.log('sdasasd', record);
 									iconStore.clearFilter(true);
 									iconStore.filterBy(function(record,id){
+										console.log(record);
 										var stringToMatch = (
 											record.get('province'))
 										var match = (stringToMatch.indexOf(value) >= 0 );
 										return match;
 									});
-									
 									console.log(iconStore);
-								//
+								
 							}
 						}
 					}
@@ -401,9 +390,6 @@ Ext.define('mappanel',{
 					displayInLayerSwitcher: false
 				}
         );
-		
-		
-		//
 
 		var Location = new OpenLayers.Layer.Vector('My Location', {
 		 displayInLayerSwitcher: false,		
@@ -501,10 +487,32 @@ Ext.define('mappanel',{
 				  dock: 'top',
 				  items: this.buildItems(),
 				}
-			]			
+			],
+			listeners:{
+				afterrender:function(){
+				
+					viewport = Ext.ComponentQuery.query('viewport')[0];
+					console.log(viewport);
+					var chooserWindow = viewport.down('[region=west]');
+					iconStore = chooserWindow.down('#img-chooser-view').store;
+					
+					var value = 'Agusan del Sur'; //get province
+					iconStore.clearFilter(true);
+					iconStore.filterBy(function(record,id){
+						console.log(record);
+						var stringToMatch = (
+							record.get('province'))
+						var match = (stringToMatch.indexOf(value) >= 0 );
+						return match;
+					});
+					
+					console.log(iconStore);
+				}
+			
+			}	
 		});		
 
-		this.callParent();   
+		this.callParent();  
 		
     }	
 	

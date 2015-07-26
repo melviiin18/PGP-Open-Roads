@@ -43,6 +43,7 @@ Ext.define('Chooser.IconBrowser', {
             '</tpl>'
         // '</div>'
     ],
+	
     
     initComponent: function() {
         this.store = Ext.create('Ext.data.Store', {
@@ -55,11 +56,41 @@ Ext.define('Chooser.IconBrowser', {
                     type: 'json',
                     rootProperty: ''
                 }
-            }
+            },
+			listeners:{
+				  load: {
+					fn: function(){
+						var viewport = Ext.ComponentQuery.query('viewport')[0];
+					    console.log(viewport);
+						var chooserWindow = viewport.down('[region=west]');
+						var iconStore = chooserWindow.down('#img-chooser-view').store;
+						
+						value='Surigao del Sur'
+						iconStore.clearFilter(true);
+						iconStore.filterBy(function(record,id){
+							console.log(record);
+							
+							
+							var stringToMatch = (
+								record.get('province'))
+							var match = (stringToMatch.indexOf(value) >= 0 );
+							return match;
+						});
+					}
+				  }
+			}
+			
         });		
+		
+		
+		
         
         //this.callParent(arguments);
 		this.callParent();
         this.store.sort();
+		
+		
+		
+		
     }
 });
