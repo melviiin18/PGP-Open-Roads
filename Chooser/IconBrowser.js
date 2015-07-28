@@ -61,16 +61,12 @@ Ext.define('Chooser.IconBrowser', {
 				  load: {
 					fn: function(){
 						var viewport = Ext.ComponentQuery.query('viewport')[0];
-					    console.log(viewport);
 						var chooserWindow = viewport.down('[region=west]');
 						var iconStore = chooserWindow.down('#img-chooser-view').store;
 						
 						value='Surigao del Sur'
 						iconStore.clearFilter(true);
 						iconStore.filterBy(function(record,id){
-							console.log(record);
-							
-							
 							var stringToMatch = (
 								record.get('province'))
 							var match = (stringToMatch.indexOf(value) >= 0 );

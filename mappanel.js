@@ -143,7 +143,7 @@ Ext.define('mappanel',{
 						map.zoomTo(1);
 				}
 					
-			},{
+			}/*,{
 				xtype:'button',
 				tooltip:'Buffer tool',
 				icon:'./chooser/icons/buffer.png',
@@ -159,7 +159,7 @@ Ext.define('mappanel',{
 					win.show();					
 					
 				}
-			},
+			}*/,
 			'->',
 			{
 				   xtype:'combo',
@@ -178,21 +178,18 @@ Ext.define('mappanel',{
 				   listConfig: {
 						listeners: {
 							itemclick: function(list, record) {
-								console.log(record.raw[0]);
 								viewport = Ext.ComponentQuery.query('viewport')[0];
 								var chooserWindow = viewport.down('[region=west]');
 								iconStore = chooserWindow.down('#img-chooser-view').store;
 									var value = record.raw[0]; //get province
-									console.log('sdasasd', record);
 									iconStore.clearFilter(true);
 									iconStore.filterBy(function(record,id){
-										console.log(record);
 										var stringToMatch = (
 											record.get('province'))
 										var match = (stringToMatch.indexOf(value) >= 0 );
 										return match;
 									});
-									console.log(iconStore);
+									
 								
 							}
 						}

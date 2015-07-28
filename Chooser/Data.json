@@ -9,28 +9,28 @@
 		
     },	
 	{
-        name: 'Provincial',
+        name: 'Provincial Road',
         thumb: 'provincial.png',
         url: 'provincial',
 		tooltip:'Provincial Road',	
 		province:'Surigao del Sur'
     },	
 	{
-        name: 'City',
+        name: 'City Road',
         thumb: 'city.png',
         url: 'city',
 		tooltip:'City Road',	
 		province:'Surigao del Sur'
     },	
 	{
-        name: 'Municipal',
+        name: 'Municipal Road',
         thumb: 'municipal.png',
         url: 'municipal',
 		tooltip:'Municipal Road',
 		province:'Surigao del Sur'		
     },	
 	{
-        name: 'Barangay',
+        name: 'Barangay Road',
         thumb: 'brgy.png',
         url: 'brgy',
 		tooltip:'Barangay Road',
@@ -38,14 +38,14 @@
 		
     },	
 	{
-        name: 'Private',
+        name: 'Private Road',
         thumb: 'private.png',
         url: 'private',
 		tooltip:'Private Road',
 		province:'Surigao del Sur'	
     },	
 	{
-        name: 'NIA',
+        name: 'NIA Road',
         thumb: 'NIA.png',
         url: 'nia',
 		tooltip:'NIA Road',
@@ -68,28 +68,28 @@
 		
     },	
 	{
-        name: 'Provincial',
+        name: 'Provincial Road',
         thumb: 'provincial.png',
         url: 'provincial',
 		tooltip:'Provincial Road',	
 		province:'Agusan del Sur'
     },	
 	{
-        name: 'City',
+        name: 'City Road',
         thumb: 'city.png',
         url: 'city',
 		tooltip:'City Road',	
 		province:'Agusan del Sur'
     },	
 	{
-        name: 'Municipal',
+        name: 'Municipal Road',
         thumb: 'municipal.png',
         url: 'municipal',
 		tooltip:'Municipal Road',
 		province:'Agusan del Sur'		
     },	
 	{
-        name: 'Barangay',
+        name: 'Barangay Road',
         thumb: 'brgy.png',
         url: 'brgy',
 		tooltip:'Barangay Road',
@@ -97,7 +97,7 @@
 		
     },	
 	{
-        name: 'Private',
+        name: 'Private Road',
         thumb: 'private.png',
         url: 'private',
 		tooltip:'Private Road',
@@ -113,7 +113,7 @@
 		
     },	
 	{
-        name: 'Provincial',
+        name: 'Provincial Road',
         thumb: 'provincial.png',
         url: 'provincial',
 		tooltip:'Provincial Road',	
@@ -121,14 +121,14 @@
     },	
 	
 	{
-        name: 'Municipal',
+        name: 'Municipal Road',
         thumb: 'municipal.png',
         url: 'municipal',
 		tooltip:'Municipal Road',
 		province:'Siquijor'		
     },	
 	{
-        name: 'Barangay',
+        name: 'Barangay Road',
         thumb: 'brgy.png',
         url: 'brgy',
 		tooltip:'Barangay Road',
@@ -136,7 +136,7 @@
 		
     },	
 	{
-        name: 'Private',
+        name: 'Private Road',
         thumb: 'private.png',
         url: 'private',
 		tooltip:'Private Road',

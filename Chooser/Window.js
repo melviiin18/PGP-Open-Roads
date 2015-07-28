@@ -106,88 +106,78 @@ Ext.define('Chooser.Window', {
 		/**
 		Load selected layer
 		*/	
-		var layername = selectedImage.data.name;
-		var layer = selectedImage.data.url;		
+		if (selectedImage){
 		
-		//agusan_del_sur_road_brgy
-		//Layer select based on province
-		//format layername						
-		layername=capitalizeFirstLetter(layer) + ' Road (LGU-' + Province + ')'
-		
-		
-		
-		switch(Province){
-			case 'Surigao del Sur':			
-				layer='surigao_del_sur_road_' + layer;	
-				break;
-			case 'Agusan del Sur':
-				layer='agusan_del_sur_road_' + layer;
-				break;
-			case 'Siquijor':
-				layer='siquijor_road_' + layer;
-				break;
-		
-		}
-		
-		function capitalizeFirstLetter(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-		
-		if(this.mappanel.map.getLayersByName(layername).length > 0) {				
-				this.mappanel.map.getLayersByName(layername)[0].destroy();					
-		};					
-		
-		//remove 
-		/* layername = layername.replace('<br>', " ");
-		layername = layername.replace('<br>', " "); */
-		
-		console.log(layer);
-		var Layer1 = new OpenLayers.Layer.WMS(
-			layername,
-			//'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
-			'http://192.168.8.20:8080/geoserver/geoportal/wms', 
-			{
-				layers:layer,				
-				transparent:true						
-			},
-			{
-				//isBaseLayer:false,
-				opacity:.7
+			var layername = selectedImage.data.name;
+			var layer = selectedImage.data.url;		
+			
+	
+			//format layername						
+			layername=capitalizeFirstLetter(layer) + ' Road (LGU-' + Province + ')'
+			
+			switch(Province){
+				case 'Surigao del Sur':			
+					layer='surigao_del_sur_road_' + layer;	
+					break;
+				case 'Agusan del Sur':
+					layer='agusan_del_sur_road_' + layer;
+					break;
+				case 'Siquijor':
+					layer='siquijor_road_' + layer;
+					break;
+			
 			}
-		); 		
-		this.mappanel.map.addLayer(Layer1);	
-		
-		
-		//zoom to data extent
-		wms = new OpenLayers.Format.WMSCapabilities();
-			OpenLayers.Request.GET({
-				url:"http://localhost:3000/192.168.8.20:8080/geoserver/wms/?request=GetCapabilities",
-				success: function(e){
-					var response = wms.read(e.responseText);
-					var capability = response.capability;
-					console.log(capability);	
-					for (var i=0, len=capability.layers.length; i<len; i+=1) { 
-						var layerObj = capability.layers[i]; 	
-						if (layerObj.name === 'geoportal:' + layer) { 
-							console.log(layerObj.llbbox)	
-							var bounds  = new OpenLayers.Bounds(layerObj.llbbox).transform('EPSG:4326', 'EPSG:900913')
-							map.zoomToExtent(bounds); 
-							break; 
-						} 
-						
-						if (i==(len-1)){
-							Ext.MessageBox.show({
-								msg: 'No data yet for layer:' + layername + ', please choose another layer',
-								buttons: Ext.MessageBox.OK,
-								icon: Ext.MessageBox.INFO
-							});
-							map.getLayersByName(layername)[0].destroy();
-						}
-						console.log(len, i);
-					}
+			
+			function capitalizeFirstLetter(string) {
+				return string.charAt(0).toUpperCase() + string.slice(1);
+			}
+			
+			if(this.mappanel.map.getLayersByName(layername).length > 0) {				
+					this.mappanel.map.getLayersByName(layername)[0].destroy();					
+			};					
+			
+			//remove 
+			/* layername = layername.replace('<br>', " ");
+			layername = layername.replace('<br>', " "); */
+			
+			console.log(layer);
+			var Layer1 = new OpenLayers.Layer.WMS(
+				layername,
+				//'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
+				'http://192.168.8.20:8080/geoserver/geoportal/wms', 
+				{
+					layers:layer,				
+					transparent:true						
+				},
+				{
+					//isBaseLayer:false,
+					opacity:.7
 				}
-			});
-		//															
+			); 		
+			this.mappanel.map.addLayer(Layer1);	
+			
+			
+			//zoom to data extent
+			var wmsURL='http://192.168.8.20:8080/geoserver/wms/?request=GetCapabilities'
+			wms = new OpenLayers.Format.WMSCapabilities();
+				OpenLayers.Request.GET({
+					url:'/webapi/get.ashx?url=' + escape(wmsURL),
+					success: function(e){
+						var response = wms.read(e.responseText);
+						var capability = response.capability;
+						console.log(capability);	
+						for (var i=0, len=capability.layers.length; i<len; i+=1) { 
+							var layerObj = capability.layers[i]; 	
+							if (layerObj.name === 'geoportal:' + layer) { 
+								console.log(layerObj.llbbox)	
+								var bounds  = new OpenLayers.Bounds(layerObj.llbbox).transform('EPSG:4326', 'EPSG:900913')
+								map.zoomToExtent(bounds); 
+								break; 
+							} 
+						}
+					}
+				});
+		}														
 
     },
    
