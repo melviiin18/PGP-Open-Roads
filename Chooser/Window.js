@@ -97,8 +97,8 @@ Ext.define('Chooser.Window', {
 	
 		var me=this;
 		var selectedImage = this.down('iconbrowser').selModel.getSelection()[0];		
-		Province = me.mappanel.dockedItems.items[1].items.items[6].getRawValue();		
-
+		Province = me.mappanel.dockedItems.items[1].items.items[5].getRawValue();		
+		
 		if(this.mappanel.map.getLayersByName('My Location').length > 0) {				
 			this.mappanel.map.getLayersByName('My Location')[0].destroy();					
 		};	

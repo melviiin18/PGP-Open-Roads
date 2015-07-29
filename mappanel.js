@@ -117,7 +117,7 @@ Ext.define('mappanel',{
 			},
 			{			
 				xtype:'button',
-				tooltip:'Max Extent',
+				tooltip:'Full extent',
 				icon:'./chooser/icons/phil.png',
 				scale:'medium',
 				width:25,
@@ -442,13 +442,14 @@ Ext.define('mappanel',{
 								if (callback.features.length > 0){							
 									var pos =  e.xy		
 									
+									var feature =callback.features[0]
 									var layer_config = Utilities.getLayerConfig(topLayer.LAYERS, topLayer.STYLES );	
 									console.log(layer_config);
 									var data = {};
-									
 									Ext.each(layer_config.config, function(item, index){
 										data[item.alias] = feature.properties[item.attribute];
-									});		
+									});
+									
 									if (popup) {
 										popup.close();
 									}
