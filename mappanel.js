@@ -162,6 +162,14 @@ Ext.define('mappanel',{
 			}*/,
 			'->',
 			{
+				//xtype:'label',
+				
+				xtype:'tbtext',
+				text: 'Basemap: NAMRIA Basemaps'
+			
+			},
+			'->',
+			{
 				   xtype:'combo',
 				   fieldLabel:'Province',
 				   itemId:'cmbProvince',				   				   				   
@@ -210,6 +218,7 @@ Ext.define('mappanel',{
 						checked: true,
 						handler: function(){
 							map.setBaseLayer(map.layers[0]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
 						}
 					},
 					{
@@ -218,7 +227,8 @@ Ext.define('mappanel',{
 						group: 'basemap',
 						checked: false,
 						handler: function(){
-							map.setBaseLayer(map.layers[1]);		
+							map.setBaseLayer(map.layers[1]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);				
 							OthoExtent = new OpenLayers.Bounds(120.613472,14.295979, 121.550385,14.827789).transform('EPSG:4326','EPSG:900913')
 							map.zoomToExtent(OthoExtent);	
 							
@@ -231,6 +241,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[2]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
 							
 						}
 					},
@@ -241,6 +252,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[3]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
 						}
 					},
 					{
@@ -249,6 +261,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[4]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
 						}
 					},
 					{
@@ -257,7 +270,13 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[5]);
+							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
 						}
+					},
+					'-',
+					{
+						text: '&nbsp &nbsp &nbsp &nbsp<b>NOTE:</b><br/>&nbsp &nbsp &nbsp &nbspWE HAVE OBSERVED SOME DISCREPANCIES <br/>&nbsp &nbsp &nbsp &nbspBY AS MUCH AS 10 METERS WHEN USING BASEMAPS<br/>&nbsp &nbsp &nbsp &nbspOTHER THAN THE NAMRIA BASEMAPS AND<br/>&nbsp &nbsp &nbsp &nbspORTHO IMAGE 2011-METRO MANILA.  USERS ARE <br/>&nbsp &nbsp &nbsp &nbspADVISED TO TAKE THE NECESSARY PRECAUTIONS<br/>&nbsp &nbsp &nbsp &nbspESPECIALLY WHEN VIEWING THE ACTIVE FAULTS<br/>&nbsp &nbsp &nbsp &nbsp(VALLEY FAULT SYSTEM) USING OTHER BASEMAPS.',
+						plain: true
 					}
 			   ]
 				
