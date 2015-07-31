@@ -97,7 +97,11 @@ Ext.define('Chooser.Window', {
 	
 		var me=this;
 		var selectedImage = this.down('iconbrowser').selModel.getSelection()[0];		
-		Province = me.mappanel.dockedItems.items[1].items.items[7].getRawValue();		
+		Province = me.mappanel.dockedItems.items[1].items.items[7].getRawValue();	
+		if (Province==''){
+			Ext.Msg.alert("Message", "Please select a province first")
+			return
+		}	
 		
 		if(this.mappanel.map.getLayersByName('My Location').length > 0) {				
 			this.mappanel.map.getLayersByName('My Location')[0].destroy();					

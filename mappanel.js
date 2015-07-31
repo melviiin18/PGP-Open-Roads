@@ -176,7 +176,7 @@ Ext.define('mappanel',{
 				   queryMode:'local',
 				   store:['Surigao del Sur','Agusan del Sur','Siquijor'],
 				   displayField:'Province',
-				   value:'Surigao del Sur',
+				  // value:'Surigao del Sur',
 				   labelPad:-40,
 				   padding:'0, 20, 0, 0',
 				   
@@ -186,15 +186,37 @@ Ext.define('mappanel',{
 				   listConfig: {
 						listeners: {
 							itemclick: function(list, record) {
+								var me = this.up('panel')
+								var bounds
+								console.log('-------',me)
+								var province = record.raw[0]; //get province
+								
+
+
+								switch(province){
+									case 'Surigao del Sur':			
+										 bounds = new OpenLayers.Bounds(125.865234375,7.88860368728638,126.416236877441,9.49994850158691).transform('EPSG:4326', 'EPSG:900913');
+										break;
+									case 'Agusan del Sur':
+										 bounds = new OpenLayers.Bounds(125.360130310059,7.92923212051392,126.242874145508,8.99598026275635).transform('EPSG:4326', 'EPSG:900913');
+										break;
+									case 'Siquijor':
+										 bounds = new OpenLayers.Bounds(123.460250854492,9.11301040649414,123.67113494873,9.30002880096436).transform('EPSG:4326', 'EPSG:900913');
+										break;
+								
+								}		
+								
+								me.map.zoomToExtent(bounds);
+								
 								viewport = Ext.ComponentQuery.query('viewport')[0];
 								var chooserWindow = viewport.down('[region=west]');
 								iconStore = chooserWindow.down('#img-chooser-view').store;
-									var value = record.raw[0]; //get province
+									
 									iconStore.clearFilter(true);
 									iconStore.filterBy(function(record,id){
 										var stringToMatch = (
 											record.get('province'))
-										var match = (stringToMatch.indexOf(value) >= 0 );
+										var match = (stringToMatch.indexOf(province) >= 0 );
 										return match;
 									});
 									
