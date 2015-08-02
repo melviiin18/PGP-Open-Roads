@@ -148,7 +148,8 @@ Ext.define('Chooser.Window', {
 			var Layer1 = new OpenLayers.Layer.WMS(
 				layername,
 				//'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
-				'http://192.168.8.20:8080/geoserver/geoportal/wms', 
+				//'http://192.168.8.20:8080/geoserver/geoportal/wms', 
+				'http://202.90.149.230:8080/geoserver/geoportal/wms', 
 				{
 					layers:layer,				
 					transparent:true						
@@ -162,25 +163,25 @@ Ext.define('Chooser.Window', {
 			
 			
 			//zoom to data extent
-			var wmsURL='http://192.168.8.20:8080/geoserver/wms/?request=GetCapabilities'
-			wms = new OpenLayers.Format.WMSCapabilities();
-				OpenLayers.Request.GET({
-					url:'/webapi/get.ashx?url=' + escape(wmsURL),
-					success: function(e){
-						var response = wms.read(e.responseText);
-						var capability = response.capability;
-						console.log(capability);	
-						for (var i=0, len=capability.layers.length; i<len; i+=1) { 
-							var layerObj = capability.layers[i]; 	
-							if (layerObj.name === 'geoportal:' + layer) { 
-								console.log(layerObj.llbbox)	
-								var bounds  = new OpenLayers.Bounds(layerObj.llbbox).transform('EPSG:4326', 'EPSG:900913')
-								map.zoomToExtent(bounds); 
-								break; 
-							} 
-						}
-					}
-				});
+			// var wmsURL='http://192.168.8.20:8080/geoserver/wms/?request=GetCapabilities'
+			// wms = new OpenLayers.Format.WMSCapabilities();
+				// OpenLayers.Request.GET({
+					// url:'/webapi/get.ashx?url=' + escape(wmsURL),
+					// success: function(e){
+						// var response = wms.read(e.responseText);
+						// var capability = response.capability;
+						// console.log(capability);	
+						// for (var i=0, len=capability.layers.length; i<len; i+=1) { 
+							// var layerObj = capability.layers[i]; 	
+							// if (layerObj.name === 'geoportal:' + layer) { 
+								// console.log(layerObj.llbbox)	
+								// var bounds  = new OpenLayers.Bounds(layerObj.llbbox).transform('EPSG:4326', 'EPSG:900913')
+								// map.zoomToExtent(bounds); 
+								// break; 
+							// } 
+						// }
+					// }
+				// });
 		}														
 
     },

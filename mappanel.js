@@ -437,12 +437,156 @@ Ext.define('mappanel',{
 		 displayInLayerSwitcher: false,		
 		});			
 		
-		
-		
 		map.addLayers([pgp_basemap_cache,pgp_ortho_mm_cache,bing_aerial, arcgis_world_imagery, osm, google_satellite, Location, Location2]);		
 		map.zoomToMaxExtent()		
 		
-		map.events.register('click', map, function(e){			
+		//new code for get feature info
+		OpenLayers.Control.PGSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {                
+			defaultHandlerOptions: {
+				'single': true,
+				'double': false,
+				'pixelTolerance': 0,
+				'stopSingle': false,
+				'stopDouble': false
+			},
+			maxFeatures: 1,
+			queryVisible: true,
+			initialize: function(options) {
+				this.handlerOptions = OpenLayers.Util.extend(
+					{}, this.defaultHandlerOptions
+				);
+				OpenLayers.Control.prototype.initialize.apply(
+					this, arguments
+				); 
+				this.handler = new OpenLayers.Handler.Click(
+					this, {
+						'click': this.click
+					}, this.handlerOptions
+				);
+			}, 
+			queryLayer: function(e, layer){
+				console.log(layer);
+				var layer_name = (layer.params.LAYERS || layer.params.layers).replace("geoportal:","");
+				var url = layer.url + "?" + 
+							"request=GetFeatureInfo" + 
+							"&service=WMS" + 
+							"&version=1.1.1" + 
+							"&layers=" + layer_name + 
+							//"&styles=" + (layer.params.STYLES || layer.params.styles) +  
+							"&srs=" + (layer.params.SRS || layer.params.srs) + 
+							"&format=" + (layer.params.FORMAT || layer.params.format) + 
+							"&bbox=" + map.getExtent().toString()+  
+							"&width=" + map.getSize().w + 
+							"&height=" + map.getSize().h + 
+							"&query_layers=" + (layer.params.LAYERS || layer.params.layers) + 
+							"&info_format=application/json" + 
+							"&feature_count=" + this.maxFeatures + 
+							"&x=" + e.xy.x + 
+							"&y=" + e.xy.y + 
+							"&exceptions=application/json";
+							//"&exceptions=application%2Fvnd.ogc.se_xml";
+				
+				var retVal;
+				
+				// temporary fix 24 SEP 2014 ghelo
+				//url = url.replace('geoserver.namria.gov.ph','202.90.149.232');
+				//
+				console.log(url);
+
+				
+				
+				Ext.Ajax.request({
+					async: false,
+					url: '/webapi/get.ashx?url=' + escape(url),
+					success: function(response){
+						var obj = Ext.decode(response.responseText);	
+						retVal = obj.features;
+ 					}
+				});
+				
+				return retVal;
+			},
+			click: function(e) {
+				
+				OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
+				
+				for(var index = map.layers.length-1;index >= 0;index--){
+					var layer = this.map.layers[index];
+					
+					if(layer instanceof OpenLayers.Layer.WMS &&
+						(!this.queryVisible || layer.getVisibility())) {
+						// make sure this is a WMS layer and the layer is visible
+						
+						var features = this.queryLayer(e, layer);
+						if(features.length == 0)
+							continue;
+						this.events.triggerEvent("getfeatureinfo", {xy: e.xy, 
+																	layerName: (layer.params.LAYERS || layer.params.layers), 
+																	layerTitle: layer.name, 
+																	style: (layer.params.STYLES || layer.params.styles),
+																	features: features});	
+						OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+						break;
+					}
+				}
+				
+				OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+				
+			}
+
+		});
+		
+		
+		
+			var pgsGetFeatureInfo = new OpenLayers.Control.PGSGetFeatureInfo({
+				eventListeners: {
+					'getfeatureinfo' : function(e){
+					
+						if(e.features.length == 0)
+							return;
+							
+						var feature = e.features[0];
+					
+						var layer_name = e.layerName.replace("geoportal:","");
+						var style = e.style;
+						var layer_config = Utilities.getLayerConfig(layer_name, style);
+
+						var data = {};
+						Ext.each(layer_config.config, function(item, index){
+							data[item.alias] = feature.properties[item.attribute];
+						});
+
+						var popup = Ext.create('GeoExt.window.Popup', {
+							maximizable: false,
+							collapsible: true,
+							anchorPosition: 'top-left',
+							title: layer_config.title,
+							maxHeight: 300,
+							width: 250,
+							layout: "fit",
+							map: map,
+							location: e.xy,
+							items: {
+								xtype:'propertygrid',
+								source: data,
+								hideHeaders: false,
+								sortableColumns: false
+							}
+						});
+						popup.show();
+					}
+				}
+		});
+		map.addControl(pgsGetFeatureInfo);
+		pgsGetFeatureInfo.activate();
+		
+		
+		
+		//
+		
+		
+		
+/* 		map.events.register('click', map, function(e){			
 			if (map.layers.length > 1) {
 			
 				mapIndex = map.layers.length-1
@@ -515,7 +659,7 @@ Ext.define('mappanel',{
 						})	
 					
 			}
-		});  
+		});   */
 		
 		
 		
