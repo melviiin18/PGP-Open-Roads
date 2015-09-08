@@ -206,7 +206,7 @@ Ext.define('mappanel',{
 								
 								}		
 								
-								me.map.zoomToExtent(bounds);
+								map.zoomToExtent(bounds);
 								
 								viewport = Ext.ComponentQuery.query('viewport')[0];
 								var chooserWindow = viewport.down('[region=west]');
