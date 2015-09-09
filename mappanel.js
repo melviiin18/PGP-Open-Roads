@@ -33,13 +33,111 @@ Ext.define('mappanel',{
 			},
 	
 	buildItems:function(){
-		return[			
+	
+		var items = [];
+		var me=this;		
+		
+		
+		// zoom in
+		items.push(
+			Ext.create('Ext.button.Button', Ext.create('GeoExt.Action', {
+				control: new OpenLayers.Control.ZoomBox(),
+				id: 'btnZoomIn',
+				map: map,
+				iconCls: 'add',
+				iconAlign: 'top',
+				icon: 'img/zoom_in.png',
+				scale: 'large',
+				width: 25, 
+				height: 25,
+				toggleGroup: 'navigation',
+				allowDepress: false,
+				tooltip: 'Zoom in',
+				handler: function() {
+				  if (navigator.appName == "Microsoft Internet Explorer") {
+					me.body.applyStyles('cursor:url("img/zoom_in.cur")');
+				  }
+				  else {
+					me.body.applyStyles('cursor:crosshair');
+				  }
+				}
+			}))
+		);
+		
+		
+		// zoom out
+		items.push(
+			Ext.create('Ext.button.Button', Ext.create('GeoExt.Action', {
+				control: new OpenLayers.Control.ZoomBox({out: true}),
+				id: 'btnZoomOut',
+				map: map,
+				iconCls: 'add',
+				iconAlign: 'top',
+				icon: 'img/zoom_out.png',
+				toggleGroup: 'navigation',
+				tooltip: 'Zoom out',
+				scale: 'large',
+				width: 25, 
+				height: 25,
+				handler: function() {				
+					
+				  if (navigator.appName == "Microsoft Internet Explorer") {
+					me.body.applyStyles('cursor:url("img/zoom_in.cur")');
+				  }
+				  else {
+					me.body.applyStyles('cursor:crosshair');
+				  }
+				}
+			}))
+		);
+		
+		
+		// pan
+		items.push(
+			Ext.create('Ext.button.Button', Ext.create('GeoExt.Action', {
+				control: new OpenLayers.Control.DragPan(),
+				id: 'btnPan',
+				map: map,
+				iconCls: 'add',
+				iconAlign: 'top',
+				icon: 'img/identify.png',
+				scale: 'large',
+				width: 25, 
+				height: 25,
+				toggleGroup: 'navigation',
+				tooltip: 'Pan/Identify',
+				pressed: true,
+				handler: function() {					
+					me.body.applyStyles('cursor:default');
+				},
+				listeners: {
+					toggle: function(e){
+						if(e.pressed) {
+							//info.activate();							
+							this.up('panel').pgsGetFeatureInfo.activate();
+						} else {
+							//info.deactivate();							
+							this.up('panel').pgsGetFeatureInfo.deactivate();							
+						}
+					}
+				}
+			}))
+		);
+		
+		
+		//search field
+		items.push(
 			{
-				xtype:'textfield',
+				xtype:'textfield',									
 				itemId:'Search',
 				width:200,
 				emptyText:'Location Search',
-			},{
+			}
+		);
+		
+		//Go button		
+		items.push(
+			{
 				xtype:'button',
 				text:'Go',
 				itemId:'btnGo',
@@ -47,31 +145,40 @@ Ext.define('mappanel',{
 				handler:function(){								
 					var me=this.up();				
 					var findThis = (me.getComponent('Search').getValue());					
-					var me=this.up().up();					
-					if  (me.map.getLayersByName('My Location').length > 0) {				
-						me.map.getLayersByName('My Location')[0].destroy();					
-					};	 				
-					
-					me.gCode(findThis, function(coord){					
-						if  (me.map.getLayersByName('Gcode').length > 0) {				
-							me.map.getLayersByName('Gcode')[0].destroy();					
-						};		 				
-						var currLoc = new OpenLayers.Geometry.Point(coord.a,coord.b).transform('EPSG:4326','EPSG:900913');
-						var Location = new OpenLayers.Layer.Vector(	'Gcode', {
-								 styleMap: new OpenLayers.StyleMap({'default':{										
-										externalGraphic: "./chooser/icons/marker.png",				
-										graphicYOffset: -25,
-										graphicHeight: 35,
-										graphicTitle: findThis
-								}}), 	
-								displayInLayerSwitcher: false,		
-						});							
-						Location.addFeatures([new OpenLayers.Feature.Vector(currLoc)]);						
-						me.map.addLayer(Location);						
-						me.map.zoomToExtent(Location.getDataExtent());			 		
-					})						
-				}			
-			},			
+					if (findThis){
+						var me=this.up().up();					
+						if  (me.map.getLayersByName('My Location').length > 0) {				
+							me.map.getLayersByName('My Location')[0].destroy();					
+						};	 				
+						
+						me.gCode(findThis, function(coord){					
+							if  (me.map.getLayersByName('Gcode').length > 0) {				
+								me.map.getLayersByName('Gcode')[0].destroy();					
+							};		 				
+							var currLoc = new OpenLayers.Geometry.Point(coord.a,coord.b).transform('EPSG:4326','EPSG:900913');
+							var Location = new OpenLayers.Layer.Vector(	'Gcode', {
+									 styleMap: new OpenLayers.StyleMap({'default':{										
+											externalGraphic: "./chooser/icons/marker.png",				
+											graphicYOffset: -25,
+											graphicHeight: 35,
+											graphicTitle: findThis
+									}}), 	
+									displayInLayerSwitcher: false,		
+							});							
+							Location.addFeatures([new OpenLayers.Feature.Vector(currLoc)]);						
+							me.map.addLayer(Location);						
+							me.map.zoomToExtent(Location.getDataExtent());			 		
+						})	
+					}else{
+						Ext.Msg.alert('Message', 'Please enter a location');
+					}	
+				}	
+			}		
+		
+		);
+		
+		//Get current location button
+		items.push(
 			{	
 				xtype:'button',
 				tooltip:'My current location',
@@ -82,8 +189,7 @@ Ext.define('mappanel',{
 				width:25,
 				height:25,	
 				handler:function(){					
-					var me=this.up('panel');			
-					console.log(me);
+					var me=this.up('panel');								
 					if(me.map.getLayersByName('Gcode').length > 0) {				
 						me.map.getLayersByName('Gcode')[0].destroy();					
 					};		
@@ -92,8 +198,7 @@ Ext.define('mappanel',{
 						/** Overlay current location*/		
 						navigator.geolocation.getCurrentPosition(
 							function(position){					
-								var currLoc = new OpenLayers.Geometry.Point(position.coords.longitude,position.coords.latitude).transform('EPSG:4326', 'EPSG:900913');
-								console.log('myloc--',currLoc);
+								var currLoc = new OpenLayers.Geometry.Point(position.coords.longitude,position.coords.latitude).transform('EPSG:4326', 'EPSG:900913');								
 								var Location = new OpenLayers.Layer.Vector(	'My Location', {
 										styleMap: new OpenLayers.StyleMap({'default':{
 												externalGraphic: "./chooser/icons/MyLocation.png",				
@@ -114,7 +219,11 @@ Ext.define('mappanel',{
 						console.log("Geolocation is not supported by this browser.");
 					}						
 				}		
-			},
+			}
+		);
+		
+		//full extent
+		items.push(
 			{			
 				xtype:'button',
 				tooltip:'Full extent',
@@ -142,89 +251,103 @@ Ext.define('mappanel',{
 					else
 						map.zoomTo(1);
 				}
-					
-			}/*,{
+			}
+		);
+		
+		items.push(
+			{
 				xtype:'button',
-				tooltip:'Buffer tool',
-				icon:'./chooser/icons/buffer.png',
-				scale:'medium',
+				tooltip:'Measure tool',
+				icon:'./img/measure.png',
+				scale:'large',
 				width:25,
 				height:25,
 				handler:function(){
-					var me = this.up().up();
-						console.log(me);						
-					var win = Ext.create('BufferTool', {
+					var me = this.up().up();						
+					var win = Ext.create('MeasureTool', {
 						map:me.map
 					})					
 					win.show();					
 					
 				}
-			}*/,
+			}
+		)
+		
+		items.push(
 			'->',
 			{
 				//xtype:'label',
 				
 				xtype:'tbtext',
+				itemId:'basemapLabel',
 				text: 'Basemap: NAMRIA Basemaps'
 			
 			},
-			'->',
+			'->'
+		)
+		
+		//Province combo box		
+		items.push(
 			{
-				   xtype:'combo',
-				   fieldLabel:'Province',
-				   itemId:'cmbProvince',				   				   				   
-				   queryMode:'local',
-				   store:['Surigao del Sur','Agusan del Sur','Siquijor'],
-				   displayField:'Province',
-				  // value:'Surigao del Sur',
-				   labelPad:-40,
-				   padding:'0, 20, 0, 0',
-				   
-				   editable: false,
-				   autoSelect:true,
-				   forceSelection:true,
-				   listConfig: {
-						listeners: {
-							itemclick: function(list, record) {
-								var me = this.up('panel')
-								var bounds
-								console.log('-------',me)
-								var province = record.raw[0]; //get province
-								
+			   xtype:'combo',
+			   fieldLabel:'Province',
+			   itemId:'cmbProvince',				   				   				   
+			   queryMode:'local',
+			   store:['Surigao del Sur','Agusan del Sur','Siquijor'],
+			   displayField:'Province',
+			  // value:'Surigao del Sur',
+			   labelPad:-40,
+			   padding:'0, 20, 0, 0',
+			   
+			   editable: false,
+			   autoSelect:true,
+			   forceSelection:true,
+			   listConfig: {
+					listeners: {
+						itemclick: function(list, record) {
+							console.log(record.raw[0]);
+							var me = this.up('panel');
+							var bounds
+							console.log('-------',me)
+							var province = record.raw[0]; //get province
 
-
-								switch(province){
-									case 'Surigao del Sur':			
-										 bounds = new OpenLayers.Bounds(125.865234375,7.88860368728638,126.416236877441,9.49994850158691).transform('EPSG:4326', 'EPSG:900913');
-										break;
-									case 'Agusan del Sur':
-										 bounds = new OpenLayers.Bounds(125.360130310059,7.92923212051392,126.242874145508,8.99598026275635).transform('EPSG:4326', 'EPSG:900913');
-										break;
-									case 'Siquijor':
-										 bounds = new OpenLayers.Bounds(123.460250854492,9.11301040649414,123.67113494873,9.30002880096436).transform('EPSG:4326', 'EPSG:900913');
-										break;
+							switch(province){
+								case 'Surigao del Sur':			
+									 bounds = new OpenLayers.Bounds(125.865234375,7.88860368728638,126.416236877441,9.49994850158691).transform('EPSG:4326', 'EPSG:900913');
+									break;
+								case 'Agusan del Sur':
+									 bounds = new OpenLayers.Bounds(125.360130310059,7.92923212051392,126.242874145508,8.99598026275635).transform('EPSG:4326', 'EPSG:900913');
+									break;
+								case 'Siquijor':
+									 bounds = new OpenLayers.Bounds(123.460250854492,9.11301040649414,123.67113494873,9.30002880096436).transform('EPSG:4326', 'EPSG:900913');
+									break;
+							
+							}		
+							
+							map.zoomToExtent(bounds);
+							
+							viewport = Ext.ComponentQuery.query('viewport')[0];
+							var chooserWindow = viewport.down('[region=west]');
+							iconStore = chooserWindow.down('#img-chooser-view').store;
 								
-								}		
+								iconStore.clearFilter(true);
+								iconStore.filterBy(function(record,id){
+									var stringToMatch = (
+										record.get('province'))
+									var match = (stringToMatch.indexOf(province) >= 0 );
+									return match;
+								}); 
 								
-								map.zoomToExtent(bounds);
-								
-								viewport = Ext.ComponentQuery.query('viewport')[0];
-								var chooserWindow = viewport.down('[region=west]');
-								iconStore = chooserWindow.down('#img-chooser-view').store;
-									
-									iconStore.clearFilter(true);
-									iconStore.filterBy(function(record,id){
-										var stringToMatch = (
-											record.get('province'))
-										var match = (stringToMatch.indexOf(province) >= 0 );
-										return match;
-									});
-									
-								
-							}
+							
 						}
 					}
-			},
+				}
+			}
+		);
+		
+		//switch basemap
+		items.push(					
+			
 			{
 				xtype:'button',
 				scale:'large',
@@ -235,12 +358,12 @@ Ext.define('mappanel',{
 				tooltip:'Switch basemap',
 				menu     : [
 					{
-						text: 'Philippine Geoportal',
+						text: 'NAMRIA Basemaps',
 						group: 'basemap',
 						checked: true,
 						handler: function(){
 							map.setBaseLayer(map.layers[0]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);													
 						}
 					},
 					{
@@ -250,9 +373,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[1]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);				
-							OthoExtent = new OpenLayers.Bounds(120.613472,14.295979, 121.550385,14.827789).transform('EPSG:4326','EPSG:900913')
-							map.zoomToExtent(OthoExtent);	
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);
 							
 						}
 					},
@@ -263,7 +384,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[2]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);
 							
 						}
 					},
@@ -274,7 +395,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[3]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);
 						}
 					},
 					{
@@ -283,7 +404,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[4]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);
 						}
 					},
 					{
@@ -292,7 +413,7 @@ Ext.define('mappanel',{
 						checked: false,
 						handler: function(){
 							map.setBaseLayer(map.layers[5]);
-							this.up().up().up().items.items[5].setText('Basemap : ' + this.text);
+							this.up('toolbar').getComponent('basemapLabel').setText('Basemap : ' + this.text);
 						}
 					},
 					'-',
@@ -303,7 +424,10 @@ Ext.define('mappanel',{
 			   ]
 				
 			}
-		]	
+		)
+		return items;
+		
+	
 	},
 	
 	
@@ -315,15 +439,15 @@ Ext.define('mappanel',{
 				{ 
 				controls: [
 					new OpenLayers.Control.Navigation(),					
-					new OpenLayers.Control.Zoom(),
-					new OpenLayers.Control.MousePosition(),				
+					//new OpenLayers.Control.Zoom(),
+					new OpenLayers.Control.MousePosition(),					
 				],
 				
 				fallThrough: true,							
 				projection: 'EPSG:900913'
 				
 		});		
-		console.log(map);
+		console.log(this);
 		//Map config
 		var maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
 		//var layerMaxExtent = new OpenLayers.Bounds(11128623.5489416,-55718.7227285097,16484559.8541582,3072210.74548981);
@@ -360,8 +484,7 @@ Ext.define('mappanel',{
 		
 		//Ortho
 		var pgp_ortho_mm_cache = new OpenLayers.Layer.ArcGISCache( "Ortho Image 2011 - Metro Manila",
-			"http://202.90.149.252/ArcGIS/rest/services/Basemap/PGS_OrthoImage/MapServer", {
-			//"http://202.90.149.252/ArcGIS/rest/services/Basemap/PGS_Basemap/MapServer", {
+			"http://202.90.149.252/ArcGIS/rest/services/Basemap/PGS_OrthoImage/MapServer", {			
 			isBaseLayer: true,
 
 			//From layerInfo above                        
@@ -391,8 +514,7 @@ Ext.define('mappanel',{
 			transitionEffect: "resize"
 		});
 		
-		//ArcGIS
-		
+		//ArcGIS		
 		var arcgis_world_imagery = new OpenLayers.Layer.ArcGIS93Rest("ArcGIS Online - Imagery", 
 		'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export',
 		{
@@ -421,7 +543,7 @@ Ext.define('mappanel',{
                 "Google Map - Satellite",
                 {
 					type: google.maps.MapTypeId.SATELLITE, 
-					numZoomLevels: 22,
+					numZoomLevels: 19,
 					sphericalMercator: true,
 					transitionEffect: "resize",
 					isBaseLayer: true,
@@ -515,6 +637,7 @@ Ext.define('mappanel',{
 					
 					if(layer instanceof OpenLayers.Layer.WMS &&
 						(!this.queryVisible || layer.getVisibility())) {
+						
 						// make sure this is a WMS layer and the layer is visible
 						
 						var features = this.queryLayer(e, layer);
@@ -538,7 +661,7 @@ Ext.define('mappanel',{
 		
 		
 		
-			var pgsGetFeatureInfo = new OpenLayers.Control.PGSGetFeatureInfo({
+			this.pgsGetFeatureInfo = new OpenLayers.Control.PGSGetFeatureInfo({
 				eventListeners: {
 					'getfeatureinfo' : function(e){
 					
@@ -577,90 +700,8 @@ Ext.define('mappanel',{
 					}
 				}
 		});
-		map.addControl(pgsGetFeatureInfo);
-		pgsGetFeatureInfo.activate();
-		
-		
-		
-		//
-		
-		
-		
-/* 		map.events.register('click', map, function(e){			
-			if (map.layers.length > 1) {
-			
-				mapIndex = map.layers.length-1
-				
-				if (map.layers[mapIndex].name=='My Location' || map.layers[mapIndex].name=='Gcode'){
-					mapIndex=mapIndex-1
-					if (map.layers[mapIndex].name=='My Location' || map.layers[mapIndex].name=='Gcode'){
-						mapIndex=mapIndex-1
-					}				
-				}		
-				
-				var topLayer = map.layers[mapIndex].params
-				console.log(map.layers[mapIndex].params)	
-				//var url = "http://geoserver.namria.gov.ph/geoserver/geoportal/wms?" +
-				var url = "http://192.168.8.20:8080/geoserver/geoportal/wms?" +
-						    "request=GetFeatureInfo" + 
-							"&service=WMS" + 
-							"&version=1.1.1" + 
-							"&layers=" + topLayer.LAYERS + 
-							"&styles=" + topLayer.STYLES +  
-							"&srs=" + topLayer.SRS + 			
-							"&format=" + topLayer.FORMAT +							
-							"&bbox=" + map.getExtent().toBBOX() +
-							"&width=" + map.size.w + 
-							"&height=" + map.size.h + 
-							"&query_layers=geoportal:" + topLayer.LAYERS + 
-							"&info_format=application/json" + 
-							"&feature_count=" + 10 + 
-							"&x=" + Math.round(e.xy.x) + 
-							"&y=" + Math.round(e.xy.y) + 
-							"&exceptions=application/json";
-							
-						url = "/webapi/get.ashx?url=" + escape(url);	
-					
-						console.log(url);
-						me.execUrl(url, function(callback){		
-								console.log(callback);	
-								if (callback.features.length > 0){							
-									var pos =  e.xy		
-									
-									var feature =callback.features[0]
-									var layer_config = Utilities.getLayerConfig(topLayer.LAYERS, topLayer.STYLES );	
-									console.log(layer_config);
-									var data = {};
-									Ext.each(layer_config.config, function(item, index){
-										data[item.alias] = feature.properties[item.attribute];
-									});
-									
-									if (popup) {
-										popup.close();
-									}
-									popup = Ext.create('GeoExt.window.Popup', {
-										title:layer_config.title,
-										maximizable: false,	
-										location: pos,
-										map:map,	
-										width: 300,	
-										MaxHeight:150,							
-										items: {
-											xtype:'propertygrid',
-											source:data,//callback.features[0].properties,
-											hideHeaders: false,
-											sortableColumns: false
-										},
-										autoScroll: true
-									})
-									popup.show();
-								}	
-									
-						})	
-					
-			}
-		});   */
-		
+		map.addControl(this.pgsGetFeatureInfo);
+		this.pgsGetFeatureInfo.activate();		
 		
 		
 		Ext.apply(this, {
@@ -668,21 +709,20 @@ Ext.define('mappanel',{
 			dockedItems: [
 				{ xtype: 'toolbar',
 				  dock: 'top',
+				  enableOverflow: true,
 				  items: this.buildItems(),
 				}
 			],
 			listeners:{
 				afterrender:function(){
 				
-					viewport = Ext.ComponentQuery.query('viewport')[0];
-					console.log(viewport);
+					viewport = Ext.ComponentQuery.query('viewport')[0];					
 					var chooserWindow = viewport.down('[region=west]');
 					iconStore = chooserWindow.down('#img-chooser-view').store;
 					
 					var value = 'Agusan del Sur'; //get province
 					iconStore.clearFilter(true);
-					iconStore.filterBy(function(record,id){
-						console.log(record);
+					iconStore.filterBy(function(record,id){						
 						var stringToMatch = (
 							record.get('province'))
 						var match = (stringToMatch.indexOf(value) >= 0 );

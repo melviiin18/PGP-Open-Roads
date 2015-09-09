@@ -28,7 +28,7 @@ Ext.define('Chooser.Window', {
 	TPanel:'',	 
 	mappanel:'',
     //height: 600,
-    width : 440,
+    width : 300,
     title : 'Choose a layer',	
 	collapsible:true,			
 	//collapsed:true,
@@ -96,8 +96,8 @@ Ext.define('Chooser.Window', {
 	onIconSelect: function(dataview, selections) {
 	
 		var me=this;
-		var selectedImage = this.down('iconbrowser').selModel.getSelection()[0];		
-		Province = me.mappanel.dockedItems.items[1].items.items[7].getRawValue();	
+		var selectedImage = this.down('iconbrowser').selModel.getSelection()[0];			
+		Province = me.mappanel.down('toolbar').down('#cmbProvince').getRawValue();
 		if (Province==''){
 			Ext.Msg.alert("Message", "Please select a province first")
 			return
@@ -142,9 +142,8 @@ Ext.define('Chooser.Window', {
 			
 			//remove 
 			/* layername = layername.replace('<br>', " ");
-			layername = layername.replace('<br>', " "); */
+			layername = layername.replace('<br>', " "); */			
 			
-			console.log(layer);
 			var Layer1 = new OpenLayers.Layer.WMS(
 				layername,
 				//'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
