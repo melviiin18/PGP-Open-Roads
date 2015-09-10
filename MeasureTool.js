@@ -125,8 +125,10 @@ Ext.define('MeasureTool', {
 		
 	
 		
-		this.map.addControl(measureDistanceControl);
-		this.map.addControl(measureAreaControl);
+		//this.map.addControl(measureDistanceControl);
+		//this.map.addControl(measureAreaControl);
+		map.addControl(measureDistanceControl);
+		map.addControl(measureAreaControl);
 		
 		//measureDistanceControl.activate();
 		
@@ -219,10 +221,10 @@ Ext.define('MeasureTool', {
        
 		this.on("close",function(){
 			measureDistanceControl.deactivate();
-			this.map.removeControl(measureDistanceControl);
+			map.removeControl(measureDistanceControl);
 			
 			measureAreaControl.deactivate();
-			this.map.removeControl(measureAreaControl);
+			map.removeControl(measureAreaControl);
 		});
 		
 	},

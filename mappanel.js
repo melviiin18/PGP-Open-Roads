@@ -190,8 +190,8 @@ Ext.define('mappanel',{
 				height:25,	
 				handler:function(){					
 					var me=this.up('panel');								
-					if(me.map.getLayersByName('Gcode').length > 0) {				
-						me.map.getLayersByName('Gcode')[0].destroy();					
+					if(map.getLayersByName('Gcode').length > 0) {				
+						map.getLayersByName('Gcode')[0].destroy();					
 					};		
 					
 					if (navigator.geolocation) {   
@@ -210,8 +210,8 @@ Ext.define('mappanel',{
 										
 									});		
 								Location.addFeatures([new OpenLayers.Feature.Vector(currLoc)]);						
-								me.map.addLayers([Location]);												
-								me.map.zoomToExtent(Location.getDataExtent());		
+								map.addLayers([Location]);												
+								map.zoomToExtent(Location.getDataExtent());		
 								}
 						)		
 						
@@ -232,8 +232,7 @@ Ext.define('mappanel',{
 				width:25,
 				height:25,
 				handler:function(){
-					var me=this.up().up();				
-					
+					var me=this.up().up();									
 					OthoExtent = new OpenLayers.Bounds(120.613472,14.295979, 121.550385,14.827789).transform('EPSG:4326','EPSG:900913')
 					
 					var lonlat = new OpenLayers.LonLat(121,14).transform(new OpenLayers.Projection("EPSG:4326"),new OpenLayers.Projection("EPSG:900913"));
@@ -263,11 +262,15 @@ Ext.define('mappanel',{
 				width:25,
 				height:25,
 				handler:function(){
-					var me = this.up().up();						
-					var win = Ext.create('MeasureTool', {
-						map:me.map
-					})					
-					win.show();					
+					var me = this.up().up();				
+					//console.log(Ext.WindowManager.getActive())
+					if(!Ext.getCmp('measureToolWindow')){
+						var win = Ext.create('MeasureTool', {
+							map:me.map,	
+							id: 'measureToolWindow'		
+						})					
+						win.show();					
+					}	
 					
 				}
 			}
@@ -276,8 +279,6 @@ Ext.define('mappanel',{
 		items.push(
 			'->',
 			{
-				//xtype:'label',
-				
 				xtype:'tbtext',
 				itemId:'basemapLabel',
 				text: 'Basemap: NAMRIA Basemaps'
@@ -307,8 +308,7 @@ Ext.define('mappanel',{
 						itemclick: function(list, record) {
 							console.log(record.raw[0]);
 							var me = this.up('panel');
-							var bounds
-							console.log('-------',me)
+							var bounds;							
 							var province = record.raw[0]; //get province
 
 							switch(province){
@@ -429,9 +429,7 @@ Ext.define('mappanel',{
 		
 	
 	},
-	
-	
-	
+			
 	initComponent:function(){		
 		
 		var popup, me=this 			
@@ -447,7 +445,7 @@ Ext.define('mappanel',{
 				projection: 'EPSG:900913'
 				
 		});		
-		console.log(this);
+		
 		//Map config
 		var maxExtent = new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
 		//var layerMaxExtent = new OpenLayers.Bounds(11128623.5489416,-55718.7227285097,16484559.8541582,3072210.74548981);
@@ -560,7 +558,9 @@ Ext.define('mappanel',{
 		});			
 		
 		map.addLayers([pgp_basemap_cache,pgp_ortho_mm_cache,bing_aerial, arcgis_world_imagery, osm, google_satellite, Location, Location2]);		
-		map.zoomToMaxExtent()		
+		//map.zoomToMaxExtent();
+			
+		
 		
 		//new code for get feature info
 		OpenLayers.Control.PGSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {                
@@ -608,14 +608,9 @@ Ext.define('mappanel',{
 							"&exceptions=application/json";
 							//"&exceptions=application%2Fvnd.ogc.se_xml";
 				
-				var retVal;
+				var retVal;				
 				
-				// temporary fix 24 SEP 2014 ghelo
-				//url = url.replace('geoserver.namria.gov.ph','202.90.149.232');
-				//
-				console.log(url);
-
-				
+				console.log(url);				
 				
 				Ext.Ajax.request({
 					async: false,
@@ -658,8 +653,7 @@ Ext.define('mappanel',{
 			}
 
 		});
-		
-		
+			
 		
 			this.pgsGetFeatureInfo = new OpenLayers.Control.PGSGetFeatureInfo({
 				eventListeners: {
@@ -701,11 +695,11 @@ Ext.define('mappanel',{
 				}
 		});
 		map.addControl(this.pgsGetFeatureInfo);
-		this.pgsGetFeatureInfo.activate();		
 		
+		this.pgsGetFeatureInfo.activate();						
 		
 		Ext.apply(this, {
-			map:map,
+			map:map,						
 			dockedItems: [
 				{ xtype: 'toolbar',
 				  dock: 'top',
@@ -733,11 +727,12 @@ Ext.define('mappanel',{
 				}
 			
 			}	
-		});		
-
+		});						
+		
 		this.callParent();  
 		
-    }	
+    }
+		
 	
 	
 });
