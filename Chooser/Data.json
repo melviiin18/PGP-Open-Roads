@@ -45,6 +45,13 @@
 		province:'Surigao del Sur'	
     },	
 	{
+        name: 'Company Road',
+        thumb: 'company.png',
+        url: 'company',
+		tooltip:'Company Road',
+		province:'Surigao del Sur'	
+    },	
+	{
         name: 'NIA Road',
         thumb: 'NIA.png',
         url: 'nia',
