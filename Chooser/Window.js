@@ -30,7 +30,7 @@ Ext.define('Chooser.Window', {
     //height: 600,
     width : 300,
     title : 'Choose a layer',	
-	collapsible:true,			
+	collapsible:false,			
 	//collapsed:true,
     //closeAction: 'hide',	
     //layout: 'border',
@@ -146,9 +146,9 @@ Ext.define('Chooser.Window', {
 			
 			var Layer1 = new OpenLayers.Layer.WMS(
 				layername,
-				//'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
+				'http://geoserver.namria.gov.ph/geoserver/geoportal/wms', 
 				//'http://192.168.8.20:8080/geoserver/geoportal/wms', 
-				'http://202.90.149.230:8080/geoserver/geoportal/wms', 
+				//'http://202.90.149.230:8080/geoserver/geoportal/wms', 
 				{
 					layers:layer,				
 					transparent:true						

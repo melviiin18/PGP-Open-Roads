@@ -13,9 +13,7 @@ Ext.application({
 	requires:[
 		'mappanel',		
 		'Utilities',
-		'LoadedLayerContextMenu',
-		'USGSdata',
-		'BufferTool', 
+		'LoadedLayerContextMenu',				
 		'Chooser.Window', 
 		'Chooser.IconBrowser',		
 		'GeoExt.container.WmsLegend', //needed to display legend in the legendpanel

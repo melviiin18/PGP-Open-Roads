@@ -1,12 +1,13 @@
 Ext.define('mappanel',{
 	extend:'GeoExt.panel.Map',
 	alias:'Widget.mappanel',	
-	title: "Philippine Geoportal - Open Roads Map App",   			
+	title: "Philippine Geoportal - Road Net Map App",   			
 	layout:'border',	
 	region:'center',
 	width:100,
 	height:100,
 	selLayer:'',
+	pgsGetFeatureInfo:'',
 	execUrl:function(url, callback){
 		Ext.Ajax.request({
 				url:url,
@@ -252,7 +253,8 @@ Ext.define('mappanel',{
 				}
 			}
 		);
-		
+			
+			
 		items.push(
 			{
 				xtype:'button',
